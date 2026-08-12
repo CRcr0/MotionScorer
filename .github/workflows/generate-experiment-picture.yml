@@ -2,15 +2,6 @@ name: Generate experiment-picture figures
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "experiment_picture.tex"
-      - "build_experiment_picture_figures.py"
-      - "plotting_picture/**"
-      - "README_experiment_picture.md"
-      - "requirements.txt"
-      - ".github/workflows/generate-experiment-picture.yml"
 
 permissions:
   contents: write
