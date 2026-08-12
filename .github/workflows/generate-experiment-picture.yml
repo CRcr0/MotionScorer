@@ -2,6 +2,19 @@ name: Generate experiment-picture figures
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "experiment_picture.tex"
+      - "build_experiment_picture_figures.py"
+      - "plotting_picture/**"
+      - "README_experiment_picture.md"
+      - "requirements.txt"
+      - ".github/workflows/generate-experiment-picture.yml"
+
+concurrency:
+  group: experiment-picture-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -58,6 +71,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "Generated artifacts are already up to date."
           else
-            git commit -m "Generate experiment-picture figures and preview [skip ci]"
+            git commit -m "Generate final experiment-picture figures and preview [skip ci]"
             git push
           fi
