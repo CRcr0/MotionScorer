@@ -267,27 +267,6 @@ pairwise accuracy, respectively, indicating that the gain depends on the
 correctly conditioned criterion acting on the exact attention branch rather
 than on generic latent regularization.
 
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=0.965\textwidth]{figures/fig_matched_fit_readout.pdf}
-    \caption{\textbf{Matched pseudo-score fit versus cross-domain human alignment.}
-    The horizontal axis reports pseudo-validation RMSE in reverse so that better
-    teacher fit lies to the right; the vertical axis reports WOD-E2E pairwise
-    accuracy, and marker area denotes held-out $\rho_{\mathrm{TCD}}$.
-    \methodname{} matches the plain readout's teacher fit while improving
-    pairwise accuracy from 66.8\% to 70.3\%. The LoRA marker is hollow because
-    $\rho_{\mathrm{TCD}}$ is not defined for a weight-modified readout.}
-    \label{fig:matched_fit_readout}
-\end{figure*}
-
-Figure~\ref{fig:matched_fit_readout} makes the matched-fit result visually
-explicit. The plain, permuted-target, full-state, and full \methodname{}
-variants occupy nearly the same teacher-fit region, yet only the correctly
-conditioned attention-branch objective moves close to the LoRA human-alignment
-level. The simultaneous increase in external accuracy and held-out deflection
-supports TCD as a selection principle among output-compatible readouts rather
-than merely a second route to lower pseudo-score error.
-
 
 \subsection{Inner Comparison}
 \label{sec:inner_comparison}
@@ -298,8 +277,9 @@ evaluation protocol fixed, and test three narrower claims: whether the native
 numeric channel remains limiting under stronger prompting controls; whether
 the gain concentrates in semantically difficult teacher--human disagreement
 regimes; and whether the learned context-attention pattern causally contributes
-to the score. Exact numerical values and construction details are retained in
-App.~\ref{app:numeric_visualizations} and App.~\ref{app:inner_comparison}.
+to the score. Exact values behind all three visualizations are retained in
+App.~\ref{app:numeric_visualizations}, and full constructions appear in
+App.~\ref{app:inner_comparison}.
 
 
 \subsubsection{Native Scoring Channel}
@@ -311,26 +291,29 @@ elicited.
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.965\textwidth]{figures/fig_native_scoring_channel.pdf}
-    \caption{\textbf{Native textual scoring remains low-resolution and prompt-sensitive.}
-    The horizontal axis reports prompt sensitivity on a reversed logarithmic
-    scale, the vertical axis reports WOD-E2E pairwise accuracy, and marker area
-    is proportional to the effective number of score levels $N_{\mathrm{eff}}$.
-    Stronger prompting, paraphrase ensembling, and self-consistency remain below
-    learned readouts; \methodname{} reaches 341 effective score levels and
-    70.3\% pairwise accuracy.}
+    \includegraphics[width=0.99\textwidth]{figures/fig_native_scoring_channel.pdf}
+    \caption{\textbf{Stronger prompting does not repair the native scoring channel.}
+    The same methods are aligned across four small multiples: human-aligned
+    pairwise accuracy, effective score resolution, prompt sensitivity, and
+    valid-output rate. Prompting controls remain low-resolution and
+    prompt-sensitive even when ensembling or repeated sampling improves format
+    validity. The frozen learned readouts move to a distinct operating regime,
+    with \methodname{} attaining 70.3\% pairwise accuracy, 341 effective score
+    levels, 0.09 sensitivity, and 100\% valid outputs. Exact NDCG@3 values are
+    reported in App.~\ref{tab:native_channel_numeric}.}
     \label{fig:native_scoring_channel}
 \end{figure*}
 
 Figure~\ref{fig:native_scoring_channel} rules out an under-optimized direct
 prompt as the main explanation for the readout gain. Analyze-then-score is the
-strongest native-channel control at 57.6\% pairwise accuracy, while prompt
-ensembling and self-consistency mainly improve formatting and stability rather
-than human alignment. In contrast, the plain learned readout reaches 66.8\%,
-and \methodname{} reaches 70.3\%, while expanding the effective score support
-from at most 23.7 native-channel levels to 341 and reducing prompt sensitivity
-to 0.09. The bottleneck therefore remains the textual reporting channel rather
-than insufficient prompt elicitation.
+strongest prompting baseline at 57.6\% pairwise accuracy, whereas
+\methodname{} reaches 70.3\%, a 12.7-point gain. More importantly, the best
+prompt ensemble exposes only 23.7 effective score levels and remains at 0.62
+prompt sensitivity; \methodname{} exposes 341 levels---14.4$\times$ more---and
+reduces sensitivity to 0.09. The plain readout already produces the same
+qualitative transition, and TCD improves its accuracy by a further 3.5 points.
+Thus, ensembling and repeated decoding improve formatting, but do not close the
+gap created by the textual numeric channel.
 
 
 \subsubsection{Semantic Disagreement Regimes}
@@ -344,24 +327,25 @@ ratings. No additional annotation or manual case selection is introduced.
 \begin{figure*}[t]
     \centering
     \includegraphics[width=0.99\textwidth]{figures/fig_semantic_disagreement.pdf}
-    \caption{\textbf{Human-alignment error across semantic regimes.}
-    Points report overall, teacher--human agreement, rule over-penalty, and
-    rule-pass blind-spot MAE on the WOD-E2E $0$--$10$ scale; lower is better.
-    Labels on the right report TranscendRate and worst-group MAE.
-    \methodname{} obtains the lowest error in both disagreement regimes and the
-    highest TranscendRate, showing that its gain concentrates where the automatic
-    teacher and human judgment disagree.}
+    \caption{\textbf{The gain concentrates where the automatic teacher and humans disagree.}
+    Left: MAE change relative to the Scheme-B teacher in three pre-registered
+    regimes; negative values mean closer agreement with human ratings. Right:
+    TranscendRate and worst-group MAE summarize teacher-error correction and
+    robustness. \methodname{} achieves the largest teacher-relative gains on
+    rule over-penalty ($-1.00$ MAE) and rule-pass blind spots ($-1.16$), the
+    highest TranscendRate (60.7\%), and the lowest worst-group MAE (2.79).}
     \label{fig:semantic_disagreement}
 \end{figure*}
 
 Figure~\ref{fig:semantic_disagreement} separates faithful teacher fitting from
-semantic correction. \methodname{} is not the best method on the
-teacher--human agreement subset, but it reduces rule over-penalty MAE to 2.42
-and rule-pass blind-spot MAE to 2.79, improving over both the Scheme-B teacher
-(3.42 and 3.95) and the LoRA scorer (2.51 and 3.02). Its 60.7\%
-TranscendRate and 2.79 worst-group MAE indicate that the external gain is driven
-by teacher-disagreement cases rather than by simply reproducing the teacher's
-nominal behavior.
+semantic correction. Relative to the teacher, \methodname{} is essentially
+unchanged on the agreement subset ($+0.03$ MAE), but improves by 1.00 point on
+rule over-penalty items and by 1.16 points when all represented rules pass yet
+the teacher still overestimates human quality. Its 60.7\% TranscendRate exceeds
+the plain readout's 52.4\% and LoRA's 56.1\%, while its 2.79 worst-group MAE is
+the best result. The asymmetry is the intended pattern: the method does not
+merely smooth the teacher scale, but gains specifically on the regimes in which
+the rule bottleneck is informative and structurally limiting.
 
 
 \subsubsection{Causal Readout Interventions}
@@ -373,23 +357,25 @@ fixed, and no intervention is followed by retraining.
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.965\textwidth]{figures/fig_causal_interventions.pdf}
-    \caption{\textbf{Causal interventions on the learned context-attention readout.}
-    Horizontal displacement gives the change in WOD-E2E pairwise accuracy
-    relative to the unchanged readout; annotations report absolute accuracy,
-    NDCG@3, and held-out $\rho_{\mathrm{TCD}}$. Suppressing top-attended mass
-    causes an 8.5-point drop, compared with only 1.4 points under equal-mass
-    random suppression, providing causal rather than purely visual evidence for
-    the learned readout.}
+    \includegraphics[width=0.98\textwidth]{figures/fig_causal_interventions.pdf}
+    \caption{\textbf{The learned attention pattern is functionally responsible for the score.}
+    Both panels report changes from the unchanged checkpoint, whose WOD
+    pairwise accuracy and held-out deflection are 70.3\% and 8.7. Left:
+    intervention-induced accuracy change. Right: change in
+    $\rho_{\mathrm{TCD}}$. Removing top-attended evidence costs 8.5 percentage
+    points, 7.1 points more than removing equal attention mass at random, and
+    the deflection statistic falls in the same ordering. Values are paired
+    point estimates; exact absolute RMSE, NDCG@3, accuracy, and deflection are
+    reported in App.~\ref{tab:attention_interventions_numeric}.}
     \label{fig:causal_interventions}
 \end{figure*}
 
-Figure~\ref{fig:causal_interventions} shows that the learned attention pattern
-is functionally responsible for the score. Uniformizing context attention
-reduces pairwise accuracy by 9.4 points and lowers
-$\rho_{\mathrm{TCD}}$ from 8.7 to 1.2. Removing the highest-attended evidence
-costs 8.5 points, whereas removing equal attention mass at random costs only
-1.4 points; within-modality shuffling produces an intermediate 5.2-point drop.
-Because the checkpoint and scalar head are fixed throughout, these paired
-changes cannot be attributed to retraining or head capacity and directly
-support the claimed attention-readout mechanism.
+Figure~\ref{fig:causal_interventions} provides the mechanism test that an
+attention visualization alone cannot. Uniform attention reduces pairwise
+accuracy by 9.4 points and deflection by 7.5. Suppressing the highest-attended
+mass causes an 8.5-point accuracy drop and a 6.1-point deflection drop, whereas
+suppressing equal mass at random costs only 1.4 and 0.8, respectively.
+Within-modality shuffling gives an intermediate degradation. Because every
+intervention reuses the identical checkpoint and scalar head, the 7.1-point
+top-versus-random contrast isolates position-specific evidence selected by the
+learned readout rather than generic loss of attention mass.
