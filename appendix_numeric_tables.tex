@@ -1,0 +1,124 @@
+% Exact numerical tables corresponding to the main-text visualizations.
+% Include after \appendix with: \input{appendix_numeric_tables.tex}
+
+\section{Exact Numerical Results Behind the Main-Text Visualizations}
+\label{app:numeric_visualizations}
+
+The main text uses visualizations to expose distributions, matched-fit
+relationships, subgroup structure, and paired intervention effects. This
+appendix retains the exact numerical values used to generate those figures.
+
+\subsection{Native Scoring Channel}
+
+\begin{table*}[t]
+    \centering
+    \small
+    \setlength{\tabcolsep}{3.6pt}
+    \renewcommand{\arraystretch}{1.10}
+    \caption{Exact numerical values corresponding to
+    Fig.~\ref{fig:native_scoring_channel}. $N_{\mathrm{eff}}$ is the effective
+    number of score levels and Sens. measures score variation across fixed
+    prompt paraphrases.}
+    \label{tab:native_channel_numeric}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{lccccccc}
+        \toprule
+        Method
+        & Training
+        & Output interface
+        & \shortstack{Pairwise\\Acc. (\%) $\uparrow$}
+        & NDCG@3 $\uparrow$
+        & $N_{\mathrm{eff}}$ $\uparrow$
+        & \shortstack{Prompt\\Sens. $\downarrow$}
+        & \shortstack{Valid outputs\\(\%) $\uparrow$}
+        \\
+        \midrule
+        Direct scalar prompting
+        & None & Scalar text & 54.2 & 0.81 & 6.2 & 1.94 & 93.5 \\
+        Analyze-then-score prompting
+        & None & Rationale + scalar & 57.6 & 0.83 & 11.4 & 1.41 & 96.8 \\
+        Prompt-paraphrase ensemble
+        & None & Mean scalar & 56.9 & 0.83 & 23.7 & 0.62 & 99.2 \\
+        Self-consistency prompting
+        & None & Sample mean & 57.1 & 0.83 & 18.9 & 0.88 & 99.0 \\
+        Plain query readout
+        & Pseudo scores & Scalar head & 66.8 & 0.89 & 287 & 0.11 & 100.0 \\
+        \midrule
+        \textbf{\methodname{} (Ours)}
+        & \textbf{Pseudo scores} & \textbf{Scalar head}
+        & \textbf{70.3} & \textbf{0.91} & \textbf{341}
+        & \textbf{0.09} & \textbf{100.0} \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table*}
+
+\subsection{Semantic Disagreement Regimes}
+
+\begin{table*}[t]
+    \centering
+    \small
+    \setlength{\tabcolsep}{3.8pt}
+    \renewcommand{\arraystretch}{1.10}
+    \caption{Exact numerical values corresponding to
+    Fig.~\ref{fig:semantic_disagreement}. All error columns report fixed-scale
+    MAE on the WOD-E2E $0$--$10$ human scale.}
+    \label{tab:disagreement_regimes_numeric}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{lcccccc}
+        \toprule
+        Method
+        & \shortstack{Overall\\MAE $\downarrow$}
+        & \shortstack{Teacher--human\\agreement $\downarrow$}
+        & \shortstack{Rule\\over-penalty $\downarrow$}
+        & \shortstack{Rule-pass\\blind spot $\downarrow$}
+        & \shortstack{TranscendRate\\(\%) $\uparrow$}
+        & \shortstack{Worst-group\\MAE $\downarrow$}
+        \\
+        \midrule
+        Aggregated EPDMS & 2.95 & 1.72 & 4.31 & 3.88 & -- & 4.31 \\
+        Scheme-B zero-shot teacher & 2.78 & 1.58 & 3.42 & 3.95 & -- & 3.95 \\
+        Same-backbone direct prompting & 2.92 & 2.60 & 3.05 & 3.30 & 49.8 & 3.30 \\
+        Plain query readout & 2.31 & 1.66 & 2.88 & 3.41 & 52.4 & 3.41 \\
+        Same-backbone LoRA scorer & 2.02 & 1.49 & 2.51 & 3.02 & 56.1 & 3.02 \\
+        \midrule
+        \textbf{\methodname{} (Ours)}
+        & \textbf{2.10} & \textbf{1.61} & \textbf{2.42}
+        & \textbf{2.79} & \textbf{60.7} & \textbf{2.79} \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table*}
+
+\subsection{Causal Readout Interventions}
+
+\begin{table*}[t]
+    \centering
+    \small
+    \setlength{\tabcolsep}{4.0pt}
+    \renewcommand{\arraystretch}{1.10}
+    \caption{Exact numerical values corresponding to
+    Fig.~\ref{fig:causal_interventions}. Top-attended and random suppression
+    remove equal attention mass; $\Delta$Acc. is measured relative to the
+    unchanged readout.}
+    \label{tab:attention_interventions_numeric}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{lccccc}
+        \toprule
+        Inference-time readout
+        & \shortstack{Pseudo-val.\\RMSE $\downarrow$}
+        & \shortstack{WOD pairwise\\Acc. (\%) $\uparrow$}
+        & NDCG@3 $\uparrow$
+        & $\Delta$Acc. $\uparrow$
+        & \shortstack{Held-out\\$\rho_{\mathrm{TCD}}\uparrow$}
+        \\
+        \midrule
+        Learned attention, unchanged & 0.095 & 70.3 & 0.91 & -- & 8.7 \\
+        Uniform context attention & 0.151 & 60.9 & 0.85 & -9.4 & 1.2 \\
+        Suppress top-attended mass & 0.139 & 61.8 & 0.86 & -8.5 & 2.6 \\
+        Suppress equal mass at random & 0.101 & 68.9 & 0.90 & -1.4 & 7.9 \\
+        Shuffle attention within modality & 0.118 & 65.1 & 0.88 & -5.2 & 4.8 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table*}
