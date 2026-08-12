@@ -1,0 +1,46 @@
+name: Generate experiment figures and package
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plot_experiment_figures.py"
+      - "experiment.tex"
+      - "appendix_numeric_tables.tex"
+      - "requirements.txt"
+      - ".github/workflows/generate-figures.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install plotting dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Generate PDF/PNG figures and ZIP package
+        run: python plot_experiment_figures.py
+
+      - name: Commit generated artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add figures/*.pdf figures/*.png MotionScorer_Experiment_Visuals.zip
+          if git diff --cached --quiet; then
+            echo "Generated artifacts are already up to date."
+          else
+            git commit -m "Generate publication figures and package [skip ci]"
+            git push
+          fi
