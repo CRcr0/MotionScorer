@@ -311,14 +311,14 @@ def plot_transcend_rate(output_dir: Path) -> None:
         )
 
     ax.text(
-        61.0,
+        55.25,
         3.0,
         "Most often closer to human\nthan the automatic teacher",
-        ha="left",
+        ha="center",
         va="center",
-        fontsize=10.3,
+        fontsize=9.7,
         fontweight="bold",
-        color=COLORS["ours"],
+        color="white",
     )
 
     plain_value = values[1]
