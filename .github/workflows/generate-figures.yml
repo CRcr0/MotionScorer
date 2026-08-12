@@ -9,6 +9,7 @@ on:
       - "plotting/**"
       - "experiment.tex"
       - "appendix_numeric_tables.tex"
+      - "smoke_test.tex"
       - "requirements.txt"
       - "README.md"
       - ".github/workflows/generate-figures.yml"
@@ -35,6 +36,12 @@ jobs:
 
       - name: Generate vector figures, 600-dpi previews, and ZIP
         run: python build_all_figures.py
+
+      - name: Compile the drop-in experiment smoke test
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: smoke_test.tex
+          args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode
 
       - name: Commit generated artifacts
         run: |
