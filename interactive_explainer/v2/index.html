@@ -1,0 +1,14 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MotionScorer Interactive V2</title>
+<style>html,body{margin:0;background:#061116;color:#f2f8f8;font-family:system-ui,sans-serif}#loading{min-height:100vh;display:grid;place-items:center;text-align:center;padding:24px}small{color:#9cb2b8}</style>
+<div id="loading"><div><b>Loading MotionScorer Interactive...</b><br><small>Detailed teaching edition</small></div></div>
+<script src="./payload_01.js"></script>
+<script src="./payload_02.js"></script>
+<script src="./payload_03.js"></script>
+<script src="./payload_04.js"></script>
+<script src="./payload_05.js"></script>
+<script>
+(async()=>{try{const s=window.__MS_V2;const bytes=Uint8Array.from(atob(s),c=>c.charCodeAt(0));const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));const html=await new Response(stream).text();document.open();document.write(html);document.close();}catch(e){document.getElementById("loading").textContent="Unable to load archived build: "+String(e);}})();
+</script>
