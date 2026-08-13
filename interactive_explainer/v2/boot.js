@@ -1,0 +1,1 @@
+(async()=>{try{const s=window.__MS_V2;const b=Uint8Array.from(atob(s),c=>c.charCodeAt(0));const st=new Blob([b]).stream().pipeThrough(new DecompressionStream('gzip'));const h=await new Response(st).text();document.open();document.write(h);document.close();}catch(e){document.getElementById('loading').textContent='Unable to load archived build: '+String(e);}})();
